@@ -1,0 +1,12 @@
+dataset/
+dataset_test/
+exp/
+pretrain_models/
+Download_Accelerator/
+
+*.ipynb
+*.png
+*.jpg
+*.bin
+*.pth
+*.pt
