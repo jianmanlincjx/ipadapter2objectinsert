@@ -71,7 +71,7 @@ def process_images_in_folder(input_folder, output_folder, padding=10):
             crop_to_object(file_path, output_path, padding)
 
 if __name__ == "__main__":
-    input_folder = "dataset_test/HFlickr_testdata/object"  # 替换为你的输入文件夹路径
-    output_folder = "dataset_test/HFlickr_testdata/object_"  # 替换为你的输出文件夹路径
+    input_folder = "/data1/JM/code/IP-Adapter-main/dataset_test/HFlickr_testdata_300/object"  # 替换为你的输入文件夹路径
+    output_folder = "/data1/JM/code/IP-Adapter-main/dataset_test/HFlickr_testdata_300/object_"  # 替换为你的输出文件夹路径
 
     process_images_in_folder(input_folder, output_folder)

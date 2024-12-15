@@ -3,7 +3,7 @@ import torch
 from safetensors.torch import load_file, save_file
 
 # 定义路径
-ckpt = "/data1/JM/code/IP-Adapter-main/exp/base_clip/checkpoint-25000/pytorch_model.bin"  # 使用 safetensors 格式
+ckpt = "exp/base_clip/checkpoint-20000/pytorch_model.bin"  # 使用 safetensors 格式
 save_unet_dir = os.path.join(os.path.dirname(ckpt), "processed_weight", 'unet')
 save_ipadapter_dir = os.path.join(os.path.dirname(ckpt), "processed_weight", 'ipadapter')
 os.makedirs(save_unet_dir, exist_ok=True)

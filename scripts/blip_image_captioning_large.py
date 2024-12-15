@@ -6,8 +6,8 @@ from tqdm import tqdm
 processor = BlipProcessor.from_pretrained("pretrain_models/models--Salesforce--blip-image-captioning-large")
 model = BlipForConditionalGeneration.from_pretrained("pretrain_models/models--Salesforce--blip-image-captioning-large", torch_dtype=torch.float16).to("cuda")
 
-image_dir = '/data1/JM/code/IP-Adapter-main/dataset_test/HFlickr_testdata/object'
-save_dir = '/data1/JM/code/IP-Adapter-main/dataset_test/HFlickr_testdata/text_from_blip2'
+image_dir = '/data1/JM/code/IP-Adapter-main/dataset_test/HFlickr_testdata_300/target'
+save_dir = '/data1/JM/code/IP-Adapter-main/dataset_test/HFlickr_testdata_300/text_from_blip2'
 os.makedirs(save_dir, exist_ok=True)
 image_list = sorted(os.listdir(image_dir))
 

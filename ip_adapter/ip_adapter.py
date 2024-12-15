@@ -1,12 +1,12 @@
 import os
+import torch
 from typing import List
 
-import torch
-from diffusers import StableDiffusionPipeline
 from diffusers.pipelines.controlnet import MultiControlNetModel
 from PIL import Image
 from safetensors import safe_open
 from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection
+
 
 from .utils import is_torch2_available, get_generator
 
@@ -166,6 +166,7 @@ class IPAdapter:
         guidance_scale=7.5,
         num_inference_steps=30,
         latent_condition=None,
+        latents=None,
         **kwargs,
     ):
         self.set_scale(scale)
@@ -212,7 +213,7 @@ class IPAdapter:
             negative_prompt_embeds=negative_prompt_embeds,
             guidance_scale=guidance_scale,
             num_inference_steps=num_inference_steps,
-            generator=generator, latent_condition=latent_condition,
+            generator=generator, latent_condition=latent_condition, latents=latents,
             **kwargs,
         ).images
 

@@ -3,9 +3,9 @@ from PIL import Image
 import numpy as np
 
 # 设置输入图像和mask文件夹路径
-image_folder = 'dataset_test/HFlickr_testdata/target'
-mask_folder = 'dataset_test/HFlickr_testdata/mask'
-output_folder = 'dataset_test/HFlickr_testdata/object'
+image_folder = 'dataset_test/HFlickr_testdata_300/target'
+mask_folder = 'dataset_test/HFlickr_testdata_300/mask'
+output_folder = 'dataset_test/HFlickr_testdata_300/object'
 
 # 如果输出文件夹不存在，则创建
 os.makedirs(output_folder, exist_ok=True)

@@ -16,12 +16,12 @@ unet_model_path = "pretrain_models/stable-diffusion-v1-5/unet"
 image_encoder_path = "pretrain_models/image_encoder"
 device = "cuda"
 
-ip_ckpt = "exp/base_clip/checkpoint-25000/processed_weight/ipadapter/ip_adapter.bin"
-unet_learned_path = "exp/base_clip/checkpoint-25000/processed_weight/unet/diffusion_pytorch_model.bin"
+ip_ckpt = "exp/base_clip/checkpoint-30000/processed_weight/ipadapter/ip_adapter.bin"
+unet_learned_path = "exp/base_clip/checkpoint-30000/processed_weight/unet/diffusion_pytorch_model.bin"
 
-base_dir = '/data1/JM/code/IP-Adapter-main/dataset/MSRA-10K'
-image_dir = '/data1/JM/code/IP-Adapter-main/dataset/MSRA-10K/source'
-save_dir = '/data1/JM/code/IP-Adapter-main/result/base_clip/train'
+base_dir = 'dataset_test/HFlickr_testdata_300'
+image_dir = 'dataset_test/HFlickr_testdata_300/source'
+save_dir = '/data1/JM/code/IP-Adapter-main/result/base_clip/test'
 os.makedirs(save_dir, exist_ok=True)
 
 transforms_ = transforms.Compose([
@@ -60,10 +60,10 @@ ip_model = IPAdapter(pipe, image_encoder_path, ip_ckpt, device)
 
 image_name_list = [i.split('.')[0] for i in os.listdir(image_dir)]
 for name in image_name_list[:100]:
-    object_image_path = f'{base_dir}/object_processed/{name}.png'
-    source_image_path = f'{base_dir}/source_processed/{name}.png'
-    target_image_path = f'{base_dir}/target_processed/{name}.png'
-    mask_image_path = f'{base_dir}/mask_processed/{name}.png'
+    object_image_path = f'{base_dir}/object/{name}.png'
+    source_image_path = f'{base_dir}/source/{name}.png'
+    target_image_path = f'{base_dir}/target/{name}.png'
+    mask_image_path = f'{base_dir}/mask/{name}.png'
     prompt_txt_path = f'{base_dir}/text_from_blip2/{name}.txt'
 
     with open(prompt_txt_path, 'r') as f:
@@ -75,17 +75,8 @@ for name in image_name_list[:100]:
     source_image = Image.open(source_image_path)
     source_image = transforms_(source_image.convert("RGB")).unsqueeze(0)
 
-    source_image_ = cv2.imread(source_image_path)
-    source_image_ = cv2.cvtColor(source_image_, cv2.COLOR_BGR2RGB)
-    source_image_ = torch.from_numpy(source_image_).unsqueeze(0).permute(0, 3, 1, 2)
-
     mask_image = Image.open(mask_image_path)
     mask_image = transforms_(mask_image.convert("L")).unsqueeze(0)    
-
-    target_image = cv2.imread(target_image_path)
-    target_image = cv2.cvtColor(target_image, cv2.COLOR_BGR2RGB)
-    target_image = torch.from_numpy(target_image).unsqueeze(0).permute(0, 3, 1, 2)
-
 
     with torch.no_grad():
         source_latents = vae.encode(source_image.to(dtype=torch.float16).cuda()).latent_dist.sample()
@@ -98,10 +89,25 @@ for name in image_name_list[:100]:
                             source_latents.shape[-1]
                         )
                     )
+    
+    noise = torch.randn_like(source_latents).to(pipe.dtype)
+    noisy_latents = noise_scheduler.add_noise(source_latents, noise, torch.tensor(899))
+    
     mask_latent = torch.cat([mask_latent] * 2).to(dtype=torch.float16).cuda()
     source_latents = torch.cat([source_latents] * 2).cuda()
 
-    images = ip_model.generate(pil_image=object_image, num_samples=1, num_inference_steps=50, seed=42, latent_condition=[source_latents, mask_latent], prompt=prompt)[0]
+    images = ip_model.generate(pil_image=object_image, num_samples=1, num_inference_steps=50, seed=42, latent_condition=[source_latents, mask_latent], prompt=prompt, latents=noisy_latents)[0]
+
+    ####################################################################################
+    ####################################################################################
+    ####################################################################################s
+    source_image_ = cv2.imread(source_image_path)
+    source_image_ = cv2.cvtColor(source_image_, cv2.COLOR_BGR2RGB)
+    source_image_ = torch.from_numpy(source_image_).unsqueeze(0).permute(0, 3, 1, 2)
+
+    target_image = cv2.imread(target_image_path)
+    target_image = cv2.cvtColor(target_image, cv2.COLOR_BGR2RGB)
+    target_image = torch.from_numpy(target_image).unsqueeze(0).permute(0, 3, 1, 2)
 
     if isinstance(source_image, torch.Tensor):
         source_image_ = transforms.ToPILImage()(source_image_.squeeze(0))

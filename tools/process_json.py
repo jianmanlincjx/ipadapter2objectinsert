@@ -2,20 +2,20 @@ import os
 import json
 
 # 定义文件夹路径
-base_dir = '/data1/JM/code/IP-Adapter-main/dataset/MSRA-10K'
+base_dir = '/data1/JM/code/IP-Adapter-main/dataset/MSRA-10K_inpaint'
 
 # 获取文件夹中的文件
 source_files = sorted(os.listdir(os.path.join(base_dir, 'source_processed')))
 target_files = sorted(os.listdir(os.path.join(base_dir, 'target_processed')))
 mask_files = sorted(os.listdir(os.path.join(base_dir, 'mask_processed')))
 object_files = sorted(os.listdir(os.path.join(base_dir, 'object_processed')))
-text_files = sorted(os.listdir(os.path.join(base_dir, 'text_from_blip2')))
+text_files = sorted(os.listdir(os.path.join(base_dir, 'text')))
 
 # 生成 JSON 数据
 data = []
 for i in range(len(source_files)):
     # 读取文本文件内容
-    with open(os.path.join(base_dir, 'text_from_blip2', text_files[i]), 'r') as f:
+    with open(os.path.join(base_dir, 'text', text_files[i]), 'r') as f:
         text_content = f.read().strip()
     
     # 构建一个字典对象
@@ -29,7 +29,7 @@ for i in range(len(source_files)):
     data.append(entry)
 
 # 将数据写入JSON文件
-output_path = '/data1/JM/code/IP-Adapter-main/dataset/MSRA-10K/data.json'
+output_path = '/data1/JM/code/IP-Adapter-main/dataset/MSRA-10K_inpaint/data.json'
 with open(output_path, 'w') as json_file:
     json.dump(data, json_file, indent=4)
 
