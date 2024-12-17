@@ -1,5 +1,5 @@
 CUDA_VISIBLE_DEVICES=0 accelerate launch --main_process_port 20696 --num_processes 1 --mixed_precision "fp16" \
-  trainer/tutorial_train_base_unet.py \
+  trainer/tutorial_train_base_clip_unet.py \
   --pretrained_model_name_or_path="pretrain_models/stable-diffusion-v1-5" \
   --data_json_file="dataset/MSRA-10K_inpaint/data.json" \
   --mixed_precision="fp16" \
